@@ -1,4 +1,3 @@
-// File: server/src/routes/taskRoutes.js
 import express from 'express';
 import {
   getTasks,
