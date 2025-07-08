@@ -1,0 +1,38 @@
+{
+  "name": "client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "axios": "^1.6.8",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwindcss": "^4.1.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/eslint-parser": "^7.28.0",
+    "@babel/plugin-syntax-jsx": "^7.27.1",
+    "@eslint/js": "^9.29.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.5.2",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-node": "^0.3.9",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.3.0",
+    "prettier": "^3.2.5",
+    "vite": "^7.0.0"
+  }
+}

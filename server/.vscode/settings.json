@@ -1,0 +1,14 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "eslint.enable": true,
+  "eslint.validate": [
+    "javascript"
+  ],
+  "prettier.enable": true,
+  "files.associations": {
+    "*.js": "javascript"
+  }
+}
