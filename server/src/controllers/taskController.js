@@ -1,4 +1,4 @@
-import { Task } from '../models/taskmodel.js';
+import { Task } from '../models/taskModel.js';
 import Joi from 'joi';
 import mongoose from 'mongoose';
 
