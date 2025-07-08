@@ -8,15 +8,20 @@ import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import helmet from 'helmet';
+import authRoutes from './routes/authRoutes.js';
+import { protect } from './middlewares/authMiddleware.js';
 
 dotenv.config();
 connectDB();
 
 const app = express();
 app.use(cors());
+app.use(helmet());
 app.use(express.json());
 
-app.use('/api/tasks', taskRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/tasks', protect, taskRoutes);
 
 // Define __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);

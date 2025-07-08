@@ -6,13 +6,13 @@ export default function TaskList() {
 
   if (!tasks.length)
     return (
-      <p className="text-center text-gray-500 py-2 transition-all duration-300">
-        No tasks found.
+      <p className="text-center text-gray-500 py-4">
+        No tasks found. Add a new task to get started.
       </p>
     );
 
   return (
-    <div className="space-y-4 transition-all duration-300 overflow-scroll h-96">
+    <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
       {tasks.map((task) => (
         <TaskItem key={task._id} task={task} />
       ))}

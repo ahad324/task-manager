@@ -1,14 +1,23 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
+import { useAuthContext } from './AuthContext';
 
 const TaskContext = createContext();
 
 export function TaskProvider({ children }) {
   const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
+  const { user } = useAuthContext();
 
-  const loadTasks = async () => {
+  const loadTasks = useCallback(async () => {
+    if (!user) return;
     setLoading(true);
     setError(null);
     try {
@@ -21,11 +30,11 @@ export function TaskProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]); // 👈 depends on `user`
 
   useEffect(() => {
     loadTasks();
-  }, []);
+  }, [loadTasks]); // 👈 add it safely now
 
   const handleAddOrUpdate = async (data) => {
     try {
@@ -37,7 +46,7 @@ export function TaskProvider({ children }) {
         await import('../services/taskService').then((m) => m.createTask(data));
       }
       setEditingTask(null);
-      loadTasks();
+      await loadTasks();
     } catch (err) {
       setError(err.response?.data?.message || 'Error submitting task');
     }
@@ -47,7 +56,7 @@ export function TaskProvider({ children }) {
     if (window.confirm('Delete this task?')) {
       try {
         await import('../services/taskService').then((m) => m.deleteTask(id));
-        loadTasks();
+        await loadTasks();
       } catch (err) {
         setError(err.response?.data?.message || 'Error deleting task');
       }

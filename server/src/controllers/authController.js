@@ -73,8 +73,22 @@ export const login = async (req, res) => {
 // @route POST /api/auth/logout
 // @access Public
 export const logout = (req, res) => {
-  // Client-side token removal is sufficient; no server-side action needed
   res.json({ message: 'Logged out successfully' });
+};
+
+// @desc Verify token
+// @route GET /api/auth/verify
+// @access Private
+export const verifyToken = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({ _id: user._id, username: user.username, email: user.email });
+  } catch (error) {
+    res.status(500).json({ message: `Server error ${error}` });
+  }
 };
 
 const generateToken = (id) => {

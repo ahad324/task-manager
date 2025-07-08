@@ -1,43 +1,30 @@
-import { useTaskContext } from './context/TaskContext';
-import TaskForm from './components/TaskForm';
-import TaskList from './components/TaskList';
+import { Routes, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import Header from './components/Header';
+import Login from './components/Login';
+import Register from './components/Register';
+import ProtectedRoute from './components/ProtectedRoute';
+import TaskManager from './components/TaskManager';
 
 function App() {
-  const { loading, error, editingTask, setEditingTask, handleAddOrUpdate } =
-    useTaskContext();
-
   return (
-    <div
-      className="max-w-2xl mx-auto mt-12 p-6 bg-white rounded-xl shadow-lg border border-gray-200 transition-all duration-300 hover:shadow-xl"
-      role="main"
-      aria-label="Task Manager Application"
-    >
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <Header />
-      <TaskForm
-        onSubmit={handleAddOrUpdate}
-        editingTask={editingTask}
-        cancelEdit={() => setEditingTask(null)}
-      />
-      {loading ? (
-        <div className="flex justify-center" aria-live="polite">
-          <div
-            className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin transition-all duration-300"
-            role="status"
-          >
-            <span className="sr-only">Loading...</span>
-          </div>
-        </div>
-      ) : error ? (
-        <p
-          className="text-center text-error py-2 bg-red-50 rounded transition-all duration-300"
-          role="alert"
-        >
-          {error}
-        </p>
-      ) : (
-        <TaskList />
-      )}
+      <main className="flex-grow mt-20 px-4 sm:px-6 lg:px-8">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/tasks"
+            element={
+              <ProtectedRoute>
+                <TaskManager />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/tasks" replace />} />
+        </Routes>
+      </main>
     </div>
   );
 }

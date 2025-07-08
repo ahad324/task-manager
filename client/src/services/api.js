@@ -7,10 +7,24 @@ const API = axios.create({
   },
 });
 
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 API.interceptors.response.use(
   (res) => res,
   (err) => {
-    console.error(err.response?.data?.message || 'API Error');
+    if (
+      err.response?.status === 401 &&
+      !err.config.url.includes('/auth/login')
+    ) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
     return Promise.reject(err);
   }
 );

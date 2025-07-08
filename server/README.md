@@ -1,141 +1,205 @@
-# 🛠️ Task Manager API – Setup Guide
+# Task Manager API
 
-> A step-by-step guide for setting up and running the Task Manager project locally.
+## Overview
 
----
+The Task Manager API is a Node.js and Express-based RESTful API for managing tasks and user authentication. It uses MongoDB for data storage, Mongoose for schema management, and JWT (JSON Web Tokens) for Bearer Token authentication. The API supports CRUD operations for tasks and includes endpoints for user registration, login, logout, and token verification.
 
-## ✅ Prerequisites
+## Features
 
-- Node.js (v18+ recommended)
-- MongoDB (installed locally or use MongoDB Atlas)
-- Git (optional, for cloning)
-- VSCode (or any code editor)
-- Terminal access (e.g., CMD, Terminal, iTerm)
+- **User Authentication**: Register and login users with JWT-based Bearer Token authentication.
+- **Task Management**: Create, read, update, and delete tasks associated with authenticated users.
+- **Input Validation**: Uses Joi for validating user and task data.
+- **Protected Routes**: Requires Bearer Token for task-related endpoints.
+- **Error Handling**: Provides clear error messages for validation and server errors.
+- **Swagger Documentation**: API documentation available at `/api/docs`.
 
----
+## Directory Structure
 
-## 📦 Step-by-Step Setup
+```
+server/
+├── src/
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   └── taskController.js
+│   ├── middlewares/
+│   │   ├── authMiddleware.js
+│   │   └── errorHandler.js
+│   ├── models/
+│   │   ├── taskModel.js
+│   │   └── userModel.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   └── taskRoutes.js
+│   └── index.js
+├── .env
+├── package.json
+├── .gitignore
+├── .eslintrc.js
+├── .prettierrc
+```
 
-### 1. Clone the Repository
+## Prerequisites
+
+- **Node.js**: Version 18 or higher (tested with v22.17.0)
+- **npm**: Version 8 or higher
+- **MongoDB**: Local or Atlas instance
+- **Postman**: For testing API endpoints
+
+## Installation
+
+### Clone the Repository
 
 ```bash
 git clone https://github.com/ahad324/task-manager.git
-cd task-manager
+cd task-manager/server
 ```
 
-Or manually create the folder and copy project files.
-
----
-
-### 2. Install Dependencies
-
-Navigate to the server directory:
+### Install Dependencies
 
 ```bash
-cd server
 npm install
 ```
 
----
+### Set Up Environment Variables
 
-### 3. Create Environment File
-
-In the `server` folder, create a `.env` file:
-
-```bash
-touch .env
-```
-
-Add the following content:
+Create a `.env` file in the `server/` directory:
 
 ```env
 MONGO_URI=mongodb://127.0.0.1:27017/task-manager
 PORT=3000
 NODE_ENV=development
-API_URL=http://127.0.0.1:3000/api
+JWT_SECRET=your_jwt_secret_key
 ```
 
----
+### Start MongoDB
 
-### 4. Start MongoDB
-
-Make sure MongoDB is running locally:
-
-**If installed directly:**
+#### Local MongoDB
 
 ```bash
 mongod
 ```
 
-**Or using Docker:**
+#### Docker
 
 ```bash
 docker run -d --name taskmanager-mongo -p 27017:27017 mongo
 ```
 
----
-
-### 5. Start the Server
-
-Run the server using:
+### Start the Server
 
 ```bash
 npm run dev
-# or
-npx nodemon src/index.js
 ```
 
-Expected output:
+API will be available at `http://127.0.0.1:3000/api`.
 
+## Usage
+
+### Test the API
+
+#### Register a User
+
+```http
+POST http://127.0.0.1:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "password123"
+}
 ```
-Server running on port 3000
-MongoDB Connected: 127.0.0.1
+
+#### Login
+
+```http
+POST http://127.0.0.1:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
 ```
 
----
+#### Access Protected Route (Get Tasks)
 
-### 6. Test the API
-
-Use Postman or browser to check:
-
-```
+```http
 GET http://127.0.0.1:3000/api/tasks
+Authorization: Bearer <your_jwt_token>
 ```
 
-You should see an empty array `[]`.
+#### Verify Token
 
----
+```http
+GET http://127.0.0.1:3000/api/auth/verify
+Authorization: Bearer <your_jwt_token>
+```
 
-### 7. View Swagger Docs
+### Swagger Documentation
 
 ```
 GET http://127.0.0.1:3000/api/docs
 ```
 
----
+## API Endpoints
 
-### 8. Project Directory Structure
+**Auth**:
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `GET /api/auth/verify`
+
+**Tasks**:
+
+- `GET /api/tasks`
+- `GET /api/tasks/:id`
+- `POST /api/tasks`
+- `PUT /api/tasks/:id`
+- `DELETE /api/tasks/:id`
+
+## Development
+
+### Scripts
+
+- `npm run dev`
+- `npm start`
+- `npm run lint`
+- `npm run format`
+
+## Error Handling
+
+- 400 for validation issues
+- 401 for unauthorized access
+- 500 for server errors
+
+## Deployment
 
 ```bash
-task-manager/
-├── server/
-│   ├── .vscode/
-│   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   └── index.js
-│   ├── .env
-│   ├── package.json
-│   └── README.md
-│   └── .gitignore
-│   └── prettierrc.md
-│   ├── eslint.config.js
+NODE_ENV=production npm start
 ```
 
----
+Can be deployed to Railway, Heroku, etc. Set environment variables accordingly.
 
-### ✅ Setup Complete
+## Troubleshooting
 
-The API is now running locally and ready for development.
+- Verify MongoDB connection
+- Use correct headers in Postman
+- Check if token is valid
+- Check `.env` configuration
+
+## Contributing
+
+1. Fork the repo
+2. Create branch: `git checkout -b feature/your-feature`
+3. Commit: `git commit -m "Add your feature"`
+4. Push: `git push origin feature/your-feature`
+5. Open PR
+
+## Author
+
+**AbdulAhad**  
+GitHub: [https://github.com/ahad324/task-manager](https://github.com/ahad324/task-manager)
