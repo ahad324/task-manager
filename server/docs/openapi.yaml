@@ -1,0 +1,243 @@
+openapi: 3.0.0
+info:
+  title: Task Manager API
+  description: API for managing tasks in a task manager application
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+  /api/tasks:
+    get:
+      summary: Get all tasks
+      description: Retrieves a list of all tasks, sorted by creation date in descending order.
+      responses:
+        '200':
+          description: A list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a new task
+      description: Creates a new task with the provided details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/tasks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the task (must be a valid MongoDB ObjectId)
+    get:
+      summary: Get a task by ID
+      description: Retrieves a single task by its ID.
+      responses:
+        '200':
+          description: The task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid task ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a task by ID
+      description: Updates an existing task by its ID with the provided details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTask'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Validation error or invalid task ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a task by ID
+      description: Deletes a task by its ID.
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Task deleted"
+        '400':
+          description: Invalid task ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /:
+    get:
+      summary: Check if API is running
+      description: Returns a simple message to indicate the API is operational.
+      responses:
+        '200':
+          description: API is running
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "API is running..."
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: The auto-generated ID of the task
+        title:
+          type: string
+          description: The title of the task
+        description:
+          type: string
+          description: The description of the task
+        status:
+          type: string
+          enum: [pending, "in progress", completed]
+          description: The status of the task
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time when the task was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date and time when the task was last updated
+      required:
+        - _id
+        - title
+        - status
+        - createdAt
+        - updatedAt
+    CreateTask:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the task
+        description:
+          type: string
+          description: The description of the task
+        status:
+          type: string
+          enum: [pending, "in progress", completed]
+          description: The status of the task
+      required:
+        - title
+    UpdateTask:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title of the task
+        description:
+          type: string
+          description: The description of the task
+        status:
+          type: string
+          enum: [pending, "in progress", completed]
+          description: The status of the task
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The error message
+        details:
+          type: array
+          items:
+            type: string
+          description: Validation error details (if applicable)
+      required:
+        - message

@@ -22,7 +22,9 @@
     "dotenv": "^17.1.0",
     "express": "^5.1.0",
     "joi": "^17.13.3",
-    "mongoose": "^8.16.2"
+    "mongoose": "^8.16.2",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
