@@ -1,15 +1,11 @@
 import { useTaskContext } from './context/TaskContext';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
+import Header from './components/Header';
 
 function App() {
-  const {
-    loading,
-    error,
-    editingTask,
-    setEditingTask,
-    handleAddOrUpdate,
-  } = useTaskContext();
+  const { loading, error, editingTask, setEditingTask, handleAddOrUpdate } =
+    useTaskContext();
 
   return (
     <div
@@ -17,12 +13,7 @@ function App() {
       role="main"
       aria-label="Task Manager Application"
     >
-      <h1
-        className="text-3xl font-bold text-center text-primary mb-6"
-        tabIndex="0"
-      >
-        Task Manager
-      </h1>
+      <Header />
       <TaskForm
         onSubmit={handleAddOrUpdate}
         editingTask={editingTask}

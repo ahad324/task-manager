@@ -106,9 +106,7 @@ You should see an empty array `[]`.
 
 ---
 
-### 7. View Swagger Docs (Optional)
-
-If Swagger is integrated:
+### 7. View Swagger Docs
 
 ```
 GET http://127.0.0.1:3000/api/docs
