@@ -28,7 +28,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load the OpenAPI specification
-const swaggerDocument = YAML.load(path.join(__dirname, '../docs/openapi.yaml'));
+const swaggerDocument = YAML.load(path.join(__dirname, '../docs/API_Documentation.yaml'));
 
 // Serve Swagger UI at /api-docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
