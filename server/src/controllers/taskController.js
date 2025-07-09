@@ -31,6 +31,7 @@ const validateObjectId = (id) => {
 // @access Private
 export const getTasks = async (req, res) => {
   try {
+    // Fetch all tasks created by the logged-in user, sorted by latest first
     const tasks = await Task.find({ user: req.user._id }).sort({
       createdAt: -1,
     });
@@ -45,11 +46,15 @@ export const getTasks = async (req, res) => {
 // @access Private
 export const getTask = async (req, res) => {
   try {
+    // Validate if task ID is a valid MongoDB ObjectId
     if (!validateObjectId(req.params.id)) {
       return res.status(400).json({ message: 'Invalid task ID' });
     }
+
+    // Find task by ID and ensure it belongs to the logged-in user
     const task = await Task.findOne({ _id: req.params.id, user: req.user._id });
     if (!task) return res.status(404).json({ message: 'Task not found' });
+
     res.json(task);
   } catch (error) {
     res.status(500).json({ message: `Server error ${error}` });
@@ -61,15 +66,19 @@ export const getTask = async (req, res) => {
 // @access Private
 export const createTask = async (req, res) => {
   try {
+    // Validate incoming task data
     const { error, value } = createTaskSchema.validate(req.body, {
       abortEarly: false,
     });
+
     if (error) {
       return res.status(400).json({
         message: 'Validation error',
         details: error.details.map((err) => err.message),
       });
     }
+
+    // Create and associate task with the current user
     const task = await Task.create({ ...value, user: req.user._id });
     res.status(201).json(task);
   } catch (error) {
@@ -82,23 +91,31 @@ export const createTask = async (req, res) => {
 // @access Private
 export const updateTask = async (req, res) => {
   try {
+    // Validate task ID format
     if (!validateObjectId(req.params.id)) {
       return res.status(400).json({ message: 'Invalid task ID' });
     }
+
+    // Validate request body fields
     const { error, value } = updateTaskSchema.validate(req.body, {
       abortEarly: false,
     });
+
     if (error) {
       return res.status(400).json({
         message: 'Validation error',
         details: error.details.map((err) => err.message),
       });
     }
+
+    // Find the task and ensure it belongs to the user
     const task = await Task.findOne({ _id: req.params.id, user: req.user._id });
     if (!task) return res.status(404).json({ message: 'Task not found' });
 
+    // Update the task fields
     Object.assign(task, value);
     const updated = await task.save();
+
     res.json(updated);
   } catch (error) {
     res.status(500).json({ message: `Server error ${error}` });
@@ -110,12 +127,16 @@ export const updateTask = async (req, res) => {
 // @access Private
 export const deleteTask = async (req, res) => {
   try {
+    // Validate task ID format
     if (!validateObjectId(req.params.id)) {
       return res.status(400).json({ message: 'Invalid task ID' });
     }
+
+    // Find task and ensure ownership
     const task = await Task.findOne({ _id: req.params.id, user: req.user._id });
     if (!task) return res.status(404).json({ message: 'Task not found' });
 
+    // Delete the task
     await task.deleteOne();
     res.json({ message: 'Task deleted' });
   } catch (error) {
